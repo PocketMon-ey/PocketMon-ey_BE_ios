@@ -11,12 +11,11 @@ import Moya
 struct RefuseMissionAPI: ServiceAPI {
     typealias Response = RefuseMissionDTO.Response
     let request: RefuseMissionDTO.Request
-    var path: String = "/mission/refuse"
+    var path: String = "/mission/fail"
     var method: Moya.Method { .put }
-    var task: Moya.Task { .requestPlain}
+    var task: Moya.Task { .requestJSONEncodable(request) }
     
     init(request: RefuseMissionDTO.Request) {
         self.request = request
-        self.path.append("/\(request.id)")
     }
 }

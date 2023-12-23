@@ -13,9 +13,20 @@ import RxKeyboard
 class MissionAddViewModel {
     let mission: PublishRelay<String> = .init()
     let price: PublishRelay<Int> = .init()
+    let addTrigger = PublishRelay<Void>()
+    let popDriver: Driver<Void>
+//    let alertDriver: Driver<String>
     
     init() {
+        popDriver =
+        addTrigger
+            .withLatestFrom(mission)
+            .withLatestFrom(price) { ($0, $1) }
+            .flatMap { NetworkMission.rx.addMission(childId: 2, mission: $0.0, reward: $0.1) }
+            .map { _ in () }
+            .asDriver(onErrorJustReturn: ())
         
+//        alertDriver =
     }
 }
 
@@ -35,7 +46,8 @@ class MissionAddViewController: BaseViewController {
             .disposed(by: disposeBag)
         
         priceTextField.rx.text.orEmpty
-            .bind(to: viewModel.mission)
+            .compactMap { Int($0) }
+            .bind(to: viewModel.price)
             .disposed(by: disposeBag)
         
         viewModel.price
@@ -53,8 +65,20 @@ class MissionAddViewController: BaseViewController {
         nextView.rx.tapGesture()
             .when(.recognized)
             .withUnretained(self)
+            .filter { owner, _ in owner.validCheck() }
+            .map { _ in () }
+            .do { [weak self] _ in self?.nextView.isUserInteractionEnabled = false }
+            .bind(to: viewModel.addTrigger)
+            .disposed(by: disposeBag)
+        
+        nextView.rx.tapGesture()
+            .when(.recognized)
+            .withUnretained(self)
+            .filter { owner, _ in !owner.validCheck() }
+            .withUnretained(self)
             .bind { owner, _ in
-                //TODO 신청 프로세스
+                let vc = OneButtonAlertViewController(viewModel: .init(content: "입력을 확인해주세요", buttonText: "확인", textColor: .black))
+                owner.present(vc, animated: true)
             }.disposed(by: disposeBag)
         
         goMissionBoxLabel.rx.tapGesture()
@@ -63,6 +87,14 @@ class MissionAddViewController: BaseViewController {
             .bind { owner, _ in
                 let vc = RecentMissionViewController(viewModel: .init(mission: viewModel.mission, price: viewModel.price))
                 owner.navigationController?.pushViewController(vc, animated: true)
+            }.disposed(by: disposeBag)
+        
+        viewModel.popDriver
+            .drive(with: self) { owner, _ in
+                UserDefaultManager.addCount += 1
+                let vc = OneButtonAlertViewController(viewModel: .init(content: "등록되었습니다.", buttonText: "확인", textColor: .black))
+                owner.present(vc, animated: true)
+                owner.navigationController?.popViewController(animated: true)
             }.disposed(by: disposeBag)
     }
     
@@ -80,6 +112,15 @@ class MissionAddViewController: BaseViewController {
          }
      }
     
+    func validCheck() -> Bool {
+        if let mission = missionTextField.text,
+            let price = priceTextField.text,
+           let priceInt = Int(price)
+        {
+        return mission != "" && priceInt != 0
+        }
+        return false
+    }
     
     // MARK: - Initializer
     init(viewModel: MissionAddViewModel) {
@@ -94,12 +135,13 @@ class MissionAddViewController: BaseViewController {
     
     // MARK: - Life Cycle
     override func viewDidLoad() {
-        view.backgroundColor = .init(hex: "#F9F9FBFF")
+        super.viewDidLoad()
+        appendNavigationLeftLabel(title: "미션등록")
     }
     
     // MARK: - UIComponents
     let titleLabel: UILabel = {
-        $0.text = "대출을 신청해볼까요?"
+        $0.text = "미션을 등록해볼까요?"
         $0.font = .boldSystemFont(ofSize: 25)
         $0.adjustsFontSizeToFitWidth = true
         return $0

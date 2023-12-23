@@ -22,5 +22,10 @@ class BaseViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .init(hex: "#F9F9FBFF")
+        appendNavigationLeftBackButton(color: .black)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        setNavigationBackgroundColor(color: .white)
     }
 }

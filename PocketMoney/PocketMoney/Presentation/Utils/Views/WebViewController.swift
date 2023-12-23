@@ -36,12 +36,13 @@ class WebViewController: UIViewController, WKUIDelegate {
     
     func loadWebView() {
         DispatchQueue.global(qos: .background).async { [weak self] in
-            guard  let url = URL(string: self?.linkString ?? "") else {
+            guard let url = URL(string: self?.linkString ?? "") else {
                 DispatchQueue.main.async {
                     self?.navigationController?.popViewController(animated: true)
                 }
                 return
             }
+            print(url)
             let request = URLRequest(url: url)
             
             DispatchQueue.main.async {
@@ -88,6 +89,11 @@ extension WebViewController: WKNavigationDelegate {
 extension WebViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "PocketMoney" {
+            print(message.body)
+            let m = (message.body as! String).components(separatedBy: " ")
+            UserDefaultManager.userId = 2
+            UserDefaultManager.isChild = m[1] == "1"
+            
             let vc = UINavigationController(rootViewController: MissionHomeViewController(viewModel: .init()))
             vc.modalPresentationStyle = .overFullScreen
             present(vc, animated: false)

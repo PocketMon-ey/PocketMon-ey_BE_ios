@@ -30,8 +30,8 @@
             filePath = "PocketMoney/Presentation/MissionAdd/MissionAddViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "27"
-            endingLineNumber = "27"
+            startingLineNumber = "38"
+            endingLineNumber = "38"
             landmarkName = "bind(viewModel:)"
             landmarkType = "7">
          </BreakpointContent>

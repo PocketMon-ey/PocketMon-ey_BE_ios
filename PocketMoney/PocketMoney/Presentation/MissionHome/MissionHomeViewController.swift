@@ -17,9 +17,14 @@ class MissionHomeViewController: BaseViewController {
     
     // MARK: - Binding
     func bind(viewModel: MissionHomeViewModel) {
+        
         rx.viewDidLoad
-            .do { _ in viewModel.status.accept(0) }
             .bind(to: viewModel.viewDidLoadRelay)
+            .disposed(by: disposeBag)
+        
+        rx.viewWillAppear
+            .do { _ in viewModel.status.accept(viewModel.status.value) }
+            .bind(to: viewModel.viewWillAppearRelay)
             .disposed(by: disposeBag)
         
         listView.collectionView.rx.itemSelected
@@ -84,9 +89,6 @@ class MissionHomeViewController: BaseViewController {
             }.disposed(by: disposeBag)
     }
     
-    
-
-    
     // MARK: - Initializer
     init(viewModel: MissionHomeViewModel) {
         super.init()
@@ -102,18 +104,8 @@ class MissionHomeViewController: BaseViewController {
         super.viewDidLoad()
         setUI()
         configureStackView()
-        setNavigationBackgroundColor(color: .black.withAlphaComponent(0))
-        appendNavigationLeftBackButton(color: .white)
-        let temp = UIView()
-        temp.backgroundColor = .red
-        appendNavigationLeftCustomView(temp)
-        
+        appendNavigationLeftLabel(title: "미션함")
         // Do any additional setup after loading the view.
-    }
-    
-    
-    override func viewDidAppear(_ animated: Bool) {
-        setNavigationBackgroundColor(color: .blue)
     }
     
     // MARK: - UIComponents
@@ -157,7 +149,7 @@ class MissionHomeViewController: BaseViewController {
     
     let approveButton: TabButton = {
         return $0
-    }(TabButton(tag: 1, text: "완료승인"))
+    }(TabButton(tag: 1, text: "완료요청"))
     
     let finishButton: TabButton = {
         return $0

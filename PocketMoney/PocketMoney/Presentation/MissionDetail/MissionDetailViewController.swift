@@ -9,62 +9,6 @@ import SnapKit
 import UIKit
 import RxSwift
 import RxCocoa
-enum MissionStatus: Int, CaseIterable{
-    case wait, request, approve, refuse
-    
-    func hex() -> String {
-        switch self {
-        case .wait:
-            return "#636366FF"
-        case .request:
-            return "#00FF00FF"
-        case .approve:
-            return "#0000FFFF"
-        case .refuse:
-            return "#FF00000FF"
-        }
-    }
-    func detailMent() -> String {
-        switch self {
-        case .wait:
-            return "asd"
-        case .request:
-            return "asda"
-        case .approve:
-            return "3"
-        case .refuse:
-            return "4"
-        }
-    }
-    
-    func toString() -> String {
-        switch self {
-        case .wait:
-            return "대기중"
-        case .request:
-            return "완료요청"
-        case .approve:
-            return "승인됨"
-        case .refuse:
-            return "거절됨"
-        }
-    }
-}
-
-
-class MissionDetailViewModel {
-    let isChild = UserDefaultManager.isChild
-    // 대기중, 아이 -> 완료요청
-    // 완료요청, 부모 -> 승인, 반려
-    let viewDidLoadRelay = PublishRelay<Void>()
-    
-    init(missionId: Int) {
-//        let detail:
-        // TODO - 서버요청
-    }
-}
-
-
 
 class MissionDetailViewController: BaseViewController {
     // MARK: - Properties
@@ -72,8 +16,65 @@ class MissionDetailViewController: BaseViewController {
     
     // MARK: - Binding
     func bind(viewModel: MissionDetailViewModel) {
-        rx.viewDidLoad
-            .bind(to: viewModel.viewDidLoadRelay)
+        rx.viewWillAppear
+            .map { _ in () }
+            .bind(to: viewModel.viewWillAppearRelay)
+            .disposed(by: disposeBag)
+        
+        requestButtonView.rx.tapGesture()
+            .when(.recognized)
+            .map { _ in () }
+            .bind(to: viewModel.requestTrigger)
+            .disposed(by: disposeBag)
+        
+        approveButtonView.rx.tapGesture()
+            .when(.recognized)
+            .map { _ in () }
+            .bind(to: viewModel.approveTrigger)
+            .disposed(by: disposeBag)
+        
+        refuseButtonView.rx.tapGesture()
+            .when(.recognized)
+            .map { _ in () }
+            .bind(to: viewModel.refuseTrigger)
+            .disposed(by: disposeBag)
+        
+        viewModel.requestButtonIsHiddenDriver
+            .drive(with: self) { owner, isHidden in
+                owner.additionalDescriptionLabel.isHidden = false
+                owner.requestButtonView.isHidden = isHidden
+            }.disposed(by: disposeBag)
+        
+        viewModel.twoButtonsIsHiddenDriver
+            .drive(with: self) { owner, isHidden in
+                owner.approveButtonView.isHidden = isHidden
+                owner.refuseButtonView.isHidden = isHidden
+            }.disposed(by: disposeBag)
+        
+        viewModel.popDriver
+            .drive(with: self) { owner, _ in
+                let vc = OneButtonAlertViewController(viewModel: .init(content: "완료되었습니다.", buttonText: "확인", textColor: .black))
+                owner.present(vc, animated: true)
+                owner.navigationController?.popViewController(animated: true)
+                
+            }.disposed(by: disposeBag)
+        
+        viewModel.statusDriver
+            .drive(with: self) { owner, status in
+                if status == .request {
+                    owner.descriptionLabel.text = "해당 미션을 완료했어요!"
+                } else if status == .approve {
+                    owner.descriptionLabel.text = "해당 미션을 완료한 뒤\n돈을 받았어요!"
+                } else if status == .refuse {
+                    owner.descriptionLabel.text = "해당 미션을 완료했지만\n거절당했어요.."
+                }
+                owner.statusView.setStatus(status: status)
+            }.disposed(by: disposeBag)
+        viewModel.missionDriver
+            .drive(missionLabel.rx.text)
+            .disposed(by: disposeBag)
+        viewModel.priceDriver
+            .drive(priceLabel.rx.text)
             .disposed(by: disposeBag)
     }
     
@@ -91,12 +92,8 @@ class MissionDetailViewController: BaseViewController {
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        appendNavigationLeftLabel(title: "미션상세")
         // Do any additional setup after loading the view.
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        
     }
     
     // MARK: - UIComponents
@@ -150,16 +147,31 @@ class MissionDetailViewController: BaseViewController {
         return $0
     }(UILabel())
     
-    let approveButtonView: CommonButtonView = .init(text: "승인", backgroundColor: .init(hex: "#0057FFFF"))
+    let approveButtonView: CommonButtonView = {
+        $0.isHidden = true
+        return $0
+    }(CommonButtonView(text: "승인", backgroundColor: .init(hex: "#0057FFFF")))
     
-    let refuseButtonView: CommonButtonView = .init(text: "반려", backgroundColor: .init(hex: "#E6388DFF"))
+    let refuseButtonView: CommonButtonView = {
+        $0.isHidden = true
+        return $0
+    }(CommonButtonView(text: "반려", backgroundColor: .init(hex: "#E6388DFF")))
     
-    let requestButtonView: CommonButtonView = .init(text: "완료 요청", backgroundColor: .init(hex: "#850DFFFF"))
+    let requestButtonView: CommonButtonView = {
+        $0.isHidden = true
+        return $0
+    }(CommonButtonView(text: "완료 요청", backgroundColor: .init(hex: "#850DFFFF")))
+    
+    let refuseLabel: UILabel = {
+        $0.textColor = .init(hex: "#850DFFFF")
+        $0.font = .boldSystemFont(ofSize: 36)
+        return $0
+    }(UILabel())
 }
 
 extension MissionDetailViewController {
     func setUI() {
-        [nickNameLabel, nameLabel, descriptionLabel, additionalDescriptionLabel, missionView, statusView, missionLabel, priceLabel].forEach {
+        [nickNameLabel, nameLabel, descriptionLabel, additionalDescriptionLabel, missionView, statusView, missionLabel, priceLabel, refuseLabel].forEach {
             view.addSubview($0)
         }
         
@@ -204,6 +216,10 @@ extension MissionDetailViewController {
             $0.centerY.equalTo(missionView).offset(40)
         }
         
+        refuseLabel.snp.makeConstraints {
+            $0.top.equalTo(missionView.snp.bottom).offset(20)
+        }
+        
         [approveButtonView, refuseButtonView, requestButtonView].forEach {
             view.addSubview($0)
         }
@@ -230,4 +246,3 @@ extension MissionDetailViewController {
         requestButtonView.isHidden = true
     }
 }
-

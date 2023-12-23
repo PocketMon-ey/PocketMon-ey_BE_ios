@@ -19,9 +19,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         window?.backgroundColor = .systemBackground
-//        window?.rootViewController = UINavigationController(rootViewController: MissionHomeViewController(viewModel: .init()))
-        window?.rootViewController = ViewController()
+        let webService = WebViewController(linkString: "http://pocketfe.165.192.105.60.nip.io")
+        webService.modalPresentationStyle = .overFullScreen
+        webService.modalTransitionStyle = .coverVertical
+        window?.rootViewController = webService
         window?.makeKeyAndVisible()
+        
+//        UserDefaultManager.approveCount = 0
+//        UserDefaultManager.rejectCount = 0
+//        UserDefaultManager.addCount = 0
+//        UserDefaultManager.creditRate = 500
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

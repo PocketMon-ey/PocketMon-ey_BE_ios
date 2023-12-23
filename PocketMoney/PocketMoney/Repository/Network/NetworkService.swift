@@ -11,6 +11,7 @@ import RxCocoa
 import RxSwift
 import RxMoya
 import Moya
+import UIKit
 
 struct APIResponse<T: Decodable>: Decodable {
     let success: Bool
@@ -50,19 +51,21 @@ class NetworkService: NetworkServable {
                         print(a)
                     }
                     print(response," ➡️")
-                    let a = try? JSONDecoder().decode(APIResponse<API.Response>.self, from: response.data)
-                    print(a)
+                    let _ = try? JSONDecoder().decode(API.Response.self, from: response.data)
                     _ = try response.filterSuccessfulStatusCodes()
-                    let decodedData = try response.map(APIResponse<API.Response>.self)
-                    if let data = decodedData.data {
-                        completion(.success(data))
-                    }
+                    let decodedData = try response.map(API.Response.self)
+                    completion(.success(decodedData))
                 } catch let error {
                     print(error)
-                    completion(.failure(handlingError(error)))
+                    let vc = OneButtonAlertViewController(viewModel: .init(content: "네트워킹에 실패했습니다.\n잠시후 다시 시도해주세요!", buttonText: "확인", textColor: .red))
+                    self.topViewController()?.present(vc, animated: true)
+//                    completion(.failure(handlingError(error)))
                 }
             case .failure(let error):
-                completion(.failure(handlingError(error)))
+                print(error)
+                let vc = OneButtonAlertViewController(viewModel: .init(content: "네트워킹에 실패했습니다.\n잠시후 다시 시도해주세요!", buttonText: "확인", textColor: .red))
+                self.topViewController()?.present(vc, animated: true)
+//                completion(.failure(handlingError(error)))
             }
         }
 
@@ -78,7 +81,7 @@ class NetworkService: NetworkServable {
                 print("인코딩 에러")
                 error = .mappingError
                 
-            case .objectMapping(_, let response):
+            case .objectMapping(_, _):
                 print("디코딩 에러")
                 error = .mappingError
             case .statusCode(let response):
@@ -102,5 +105,28 @@ class NetworkService: NetworkServable {
             print(error.localizedDescription)
             return error
         }
+    }
+    func topViewController() -> UIViewController? {
+
+        if let keyWindow = UIApplication.shared.keyWindow {
+
+            if var viewController = keyWindow.rootViewController {
+
+                while viewController.presentedViewController != nil {
+
+                    viewController = viewController.presentedViewController!
+
+                }
+
+                print("topViewController -> \(String(describing: viewController))")
+
+                return viewController
+
+            }
+
+        }
+
+        return nil
+
     }
 }

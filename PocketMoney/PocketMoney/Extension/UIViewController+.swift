@@ -26,10 +26,23 @@ extension UIViewController {
                                          style: .plain,
                                          target: self,
                                          action: #selector(didTapBackButton))
+        
+        let homeButton = UIBarButtonItem(image: UIImage(named: "home")?.withRenderingMode(.alwaysOriginal),
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(didTapHomeButton))
+        
         if navigationItem.leftBarButtonItems == nil {
             navigationItem.leftBarButtonItems = []
         }
         [backButtonSpacer, backButton].forEach { navigationItem.leftBarButtonItems?.append($0) }
+        
+        if navigationItem.rightBarButtonItems == nil {
+            navigationItem.rightBarButtonItems = []
+        }
+        
+        
+        navigationItem.rightBarButtonItems?.append(homeButton)
     }
     
     func appendNavigationLeftCustomView(_ sender: UIView) {
@@ -43,7 +56,7 @@ extension UIViewController {
         navigationItem.leftBarButtonItems?.append(titleLabel)
     }
     
-    func appendNavigationLeftLabel(title: String = "", color: UIColor = .white) {
+    func appendNavigationLeftLabel(title: String = "", color: UIColor = .black) {
         let label = UILabel()
         label.text = title
         label.textColor = color
@@ -72,11 +85,16 @@ extension UIViewController {
     @objc
     func didTapBackButton() {
         if self.navigationController?.viewControllers.count == 1 {
-            dismiss(animated: true)
+            dismiss(animated: false)
             return
         } else {
             navigationController?.popViewController(animated: true)
         }
+    }
+    
+    @objc
+    func didTapHomeButton() {
+        dismiss(animated: false)
     }
 }
 

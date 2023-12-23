@@ -9,7 +9,7 @@ import Foundation
 import Moya
 
 struct GetMissionListAPI: ServiceAPI {
-    typealias Response = GetMissionListDTO.Response
+    typealias Response = [GetMissionListDTO.Response]
     let request: GetMissionListDTO.Request
     var path: String = "/mission/list"
     var method: Moya.Method { .get }

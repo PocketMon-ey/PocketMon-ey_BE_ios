@@ -7,16 +7,6 @@
 
 import Foundation
 
-struct CommonResponse: Decodable{
-    let childId: Int
-    let createDate: String
-    let doneDate: String?
-    let id: Int
-    let name: String
-    let reward: Int
-    let status: Int
-}
-
 struct AddMissionDTO {
     struct Request: Encodable {
         let childId: Int
@@ -32,6 +22,7 @@ struct AddMissionDTO {
         let name: String
         let reward: Int
         let status: Int
+        
     }
 }
 
@@ -48,6 +39,7 @@ struct GetMissionDetailDTO {
         let name: String
         let reward: Int
         let status: Int
+        let rejectReason: String?
     }
 }
 
@@ -96,6 +88,7 @@ struct GetMissionListDTO {
         let name: String
         let reward: Int
         let status: Int
+        let rejectReason: String?
     }
 }
 struct ReqeustMissionDTO {

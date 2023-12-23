@@ -15,6 +15,16 @@ public struct UserDefaultManager {
     public static var userId: Int
     @UserDefault(key: "isChild", defaultValue: true)
     public static var isChild: Bool
+    
+    @UserDefault(key: "approveCount", defaultValue: 0)
+    public static var approveCount: Int
+    @UserDefault(key: "rejectCount", defaultValue: 0)
+    public static var rejectCount: Int
+    @UserDefault(key: "addCount", defaultValue: 0)
+    public static var addCount: Int
+    @UserDefault(key: "creditRate", defaultValue: 500)
+    public static var creditRate: Int
+
 }
 
 @propertyWrapper

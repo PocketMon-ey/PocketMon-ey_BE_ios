@@ -13,10 +13,9 @@ struct ApproveMissionAPI: ServiceAPI {
     let request: ApproveMissionDTO.Request
     var path: String = "/mission/approve"
     var method: Moya.Method { .put }
-    var task: Moya.Task { .requestPlain}
+    var task: Moya.Task { .requestJSONEncodable(request)}
     
     init(request: ApproveMissionDTO.Request) {
         self.request = request
-        self.path.append("/\(request.id)")
     }
 }

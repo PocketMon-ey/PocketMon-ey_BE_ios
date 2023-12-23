@@ -13,10 +13,9 @@ struct ReqeustMissionAPI: ServiceAPI {
     let request: ReqeustMissionDTO.Request
     var path: String = "/mission/success"
     var method: Moya.Method { .put }
-    var task: Moya.Task { .requestPlain }
+    var task: Moya.Task { .requestJSONEncodable(request) }
     
     init(request: ReqeustMissionDTO.Request) {
         self.request = request
-        self.path.append("/\(request.id)")
     }
 }

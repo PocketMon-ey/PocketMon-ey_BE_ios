@@ -70,8 +70,8 @@ class NetworkMission: CatSDKNetworkable {
     
     static func getMissionList(
         childId: Int,
-        status: Int,
-        completion: @escaping (Result<GetMissionListDTO.Response, Error>) -> Void
+        status: Int?,
+        completion: @escaping (Result<[GetMissionListDTO.Response], Error>) -> Void
     ) {
         networkService.request(GetMissionListAPI(request: .init(childId: childId, status: status))){ result in
             switch result {
@@ -124,8 +124,8 @@ extension Reactive where Base: NetworkMission {
     }
     static func getMissionList(
         childId: Int,
-        status: Int
-    ) -> Observable<GetMissionListDTO.Response> {
+        status: Int?
+    ) -> Observable<[GetMissionListDTO.Response]> {
         Base.networkService.rx.request(GetMissionListAPI(request: .init(childId: childId, status: status))).asObservable()
     }
     static func requestMission(

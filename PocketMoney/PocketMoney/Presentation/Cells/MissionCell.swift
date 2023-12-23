@@ -8,17 +8,20 @@
 import UIKit
 
 class MissionCellItem {
-    var missionId: Int = -1
+    var missionId: Int
     let status: MissionStatus
     let date: String
     let title: String
     let price: Int
+    let rejectReason: String
     
-    init(status: MissionStatus, date: String, title: String, price: Int) {
+    init(missionId: Int, status: MissionStatus, date: String, title: String, price: Int, rejectReason: String) {
+        self.missionId = missionId
         self.status = status
         self.date = date
         self.title = title
         self.price = price
+        self.rejectReason = rejectReason
     }
 }
 
@@ -40,6 +43,7 @@ class MissionCell: UICollectionViewCell {
     
     func configureCell(with item: MissionCellItem) {
         self.item = item
+        statusView.setStatus(status: item.status)
         dateLabel.text = item.date
         titleLabel.text = item.title
         priceLabel.text = "\(item.price)"

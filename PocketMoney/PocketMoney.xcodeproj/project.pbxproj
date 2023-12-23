@@ -16,7 +16,6 @@
 		787513C12B33E98100343662 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 787513C02B33E98100343662 /* Moya */; };
 		787513C32B33E98100343662 /* RxMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 787513C22B33E98100343662 /* RxMoya */; };
 		787513CB2B33EAE200343662 /* MissionHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787513CA2B33EAE200343662 /* MissionHomeViewController.swift */; };
-		787513CD2B33EDF100343662 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787513CC2B33EDF100343662 /* ViewController.swift */; };
 		788070A22B33FD66005C2011 /* MissionDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 788070A12B33FD66005C2011 /* MissionDetailViewController.swift */; };
 		788070A42B33FF7C005C2011 /* UIColor+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 788070A32B33FF7C005C2011 /* UIColor+.swift */; };
 		788070A62B3402B2005C2011 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 788070A52B3402B2005C2011 /* NavigationController.swift */; };
@@ -52,6 +51,8 @@
 		788070F32B357189005C2011 /* ReqeustMission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 788070F22B357189005C2011 /* ReqeustMission.swift */; };
 		788070F52B357244005C2011 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 788070F42B357244005C2011 /* NetworkService.swift */; };
 		788070F72B35783F005C2011 /* NetworkMission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 788070F62B35783F005C2011 /* NetworkMission.swift */; };
+		788070FC2B37279B005C2011 /* OneButtonAlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 788070FB2B37279B005C2011 /* OneButtonAlertViewController.swift */; };
+		788070FE2B372889005C2011 /* MissionDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 788070FD2B372889005C2011 /* MissionDetailViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -63,7 +64,6 @@
 		787513B42B33E8A200343662 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		787513BA2B33E8B800343662 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		787513CA2B33EAE200343662 /* MissionHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionHomeViewController.swift; sourceTree = "<group>"; };
-		787513CC2B33EDF100343662 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		788070A12B33FD66005C2011 /* MissionDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionDetailViewController.swift; sourceTree = "<group>"; };
 		788070A32B33FF7C005C2011 /* UIColor+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+.swift"; sourceTree = "<group>"; };
 		788070A52B3402B2005C2011 /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
@@ -96,6 +96,8 @@
 		788070F22B357189005C2011 /* ReqeustMission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReqeustMission.swift; sourceTree = "<group>"; };
 		788070F42B357244005C2011 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		788070F62B35783F005C2011 /* NetworkMission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMission.swift; sourceTree = "<group>"; };
+		788070FB2B37279B005C2011 /* OneButtonAlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneButtonAlertViewController.swift; sourceTree = "<group>"; };
+		788070FD2B372889005C2011 /* MissionDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionDetailViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,10 +151,10 @@
 		787513C42B33E9A300343662 /* Repository */ = {
 			isa = PBXGroup;
 			children = (
+				788070F62B35783F005C2011 /* NetworkMission.swift */,
 				788070E22B356EA0005C2011 /* DTO */,
 				788070E52B356EB2005C2011 /* API */,
 				788070E32B356EA7005C2011 /* Network */,
-				788070F62B35783F005C2011 /* NetworkMission.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -161,7 +163,6 @@
 			isa = PBXGroup;
 			children = (
 				788070C72B3545AC005C2011 /* BaseViewController.swift */,
-				787513CC2B33EDF100343662 /* ViewController.swift */,
 				787513C92B33EA0600343662 /* Utils */,
 				788070B22B35152C005C2011 /* Cells */,
 				787513C72B33E9D900343662 /* MissionHome */,
@@ -195,14 +196,9 @@
 		787513C92B33EA0600343662 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				788070F82B371A2F005C2011 /* Views */,
 				788070A92B340E32005C2011 /* Constant.swift */,
-				787513BA2B33E8B800343662 /* WebViewController.swift */,
-				788070A52B3402B2005C2011 /* NavigationController.swift */,
-				788070AE2B34216F005C2011 /* TabButton.swift */,
-				788070BD2B3537F3005C2011 /* MissionListView.swift */,
-				788070BF2B353C81005C2011 /* CommonButtonView.swift */,
 				788070C92B3559B4005C2011 /* UserDefaultManager.swift */,
-				788070CD2B35629C005C2011 /* StatusView.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -211,6 +207,7 @@
 			isa = PBXGroup;
 			children = (
 				788070A12B33FD66005C2011 /* MissionDetailViewController.swift */,
+				788070FD2B372889005C2011 /* MissionDetailViewModel.swift */,
 			);
 			path = MissionDetail;
 			sourceTree = "<group>";
@@ -266,12 +263,26 @@
 			children = (
 				788070E82B357146005C2011 /* AddMission.swift */,
 				788070EA2B357155005C2011 /* GetMissionDetail.swift */,
+				788070F22B357189005C2011 /* ReqeustMission.swift */,
 				788070EC2B35715C005C2011 /* ApproveMission.swift */,
 				788070EE2B357165005C2011 /* RefuseMission.swift */,
 				788070F02B35716B005C2011 /* GetMissionList.swift */,
-				788070F22B357189005C2011 /* ReqeustMission.swift */,
 			);
 			path = API;
+			sourceTree = "<group>";
+		};
+		788070F82B371A2F005C2011 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				787513BA2B33E8B800343662 /* WebViewController.swift */,
+				788070A52B3402B2005C2011 /* NavigationController.swift */,
+				788070AE2B34216F005C2011 /* TabButton.swift */,
+				788070BD2B3537F3005C2011 /* MissionListView.swift */,
+				788070BF2B353C81005C2011 /* CommonButtonView.swift */,
+				788070CD2B35629C005C2011 /* StatusView.swift */,
+				788070FB2B37279B005C2011 /* OneButtonAlertViewController.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -359,13 +370,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				787513CD2B33EDF100343662 /* ViewController.swift in Sources */,
 				788070DE2B356B64005C2011 /* NetworkError.swift in Sources */,
 				788070DA2B356B64005C2011 /* CatSDKEncoding.swift in Sources */,
 				788070C02B353C81005C2011 /* CommonButtonView.swift in Sources */,
 				788070CE2B35629C005C2011 /* StatusView.swift in Sources */,
 				788070F32B357189005C2011 /* ReqeustMission.swift in Sources */,
 				788070BC2B352115005C2011 /* MissionAddViewController.swift in Sources */,
+				788070FE2B372889005C2011 /* MissionDetailViewModel.swift in Sources */,
 				788070A62B3402B2005C2011 /* NavigationController.swift in Sources */,
 				788070D12B356A68005C2011 /* MissioListDTO.swift in Sources */,
 				788070C82B3545AC005C2011 /* BaseViewController.swift in Sources */,
@@ -374,6 +385,7 @@
 				787513CB2B33EAE200343662 /* MissionHomeViewController.swift in Sources */,
 				788070A22B33FD66005C2011 /* MissionDetailViewController.swift in Sources */,
 				788070CC2B3561DB005C2011 /* CALayer+.swift in Sources */,
+				788070FC2B37279B005C2011 /* OneButtonAlertViewController.swift in Sources */,
 				788070A42B33FF7C005C2011 /* UIColor+.swift in Sources */,
 				788070E12B356DDD005C2011 /* DTOConverter.swift in Sources */,
 				788070ED2B35715C005C2011 /* ApproveMission.swift in Sources */,

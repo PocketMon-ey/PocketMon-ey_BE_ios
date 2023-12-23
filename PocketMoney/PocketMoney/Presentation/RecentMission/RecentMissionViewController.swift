@@ -18,10 +18,7 @@ class RecentMissionViewModel {
     var popDriver: Driver<Void>
     
     init(mission: PublishRelay<String>, price: PublishRelay<Int>) {
-        func test(t: Int) -> Observable<[MissionCellItem]> {
-            return Observable.just(Array(repeating: MissionCellItem(status: .wait, date: "\(t)", title: "b", price: t), count: t))
-        }
-        let fetchedItems = test(t: 10)
+        let fetchedItems = NetworkMission.rx.getMissionList(childId: UserDefaultManager.userId, status: nil).map { $0.map { dto in MissionCellItem(missionId: dto.id, status: MissionStatus(rawValue: dto.status) ?? MissionStatus.wait, date: dto.createDate, title: dto.name, price: dto.reward, rejectReason: dto.rejectReason ?? "") }}
             .share()
             
         dataSource = fetchedItems
@@ -92,11 +89,8 @@ class RecentMissionViewController: BaseViewController {
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        appendNavigationLeftLabel(title: "최근미션")
         // Do any additional setup after loading the view.
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        
     }
     
     // MARK: - UIComponents

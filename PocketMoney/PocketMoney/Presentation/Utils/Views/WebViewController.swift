@@ -30,6 +30,9 @@ class WebViewController: UIViewController, WKUIDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         configuration.userContentController.add(self, name: "PocketMoney")
+        configuration.userContentController.add(self, name: "rejectReason")
+        configuration.userContentController.add(self, name: "back")
+        configuration.userContentController.add(self, name: "home")
         setUI( )
         loadWebView()
     }
@@ -88,6 +91,7 @@ extension WebViewController: WKNavigationDelegate {
 
 extension WebViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        dump(message)
         if message.name == "PocketMoney" {
             print(message.body)
             let m = (message.body as! String).components(separatedBy: " ")
@@ -97,6 +101,20 @@ extension WebViewController: WKScriptMessageHandler {
             let vc = UINavigationController(rootViewController: MissionHomeViewController(viewModel: .init()))
             vc.modalPresentationStyle = .overFullScreen
             present(vc, animated: false)
+        } else if message.name == "rejectReason" {
+            dismiss(animated: true) {
+                if let detailVC =  (UIViewController.topViewController() as? UINavigationController)?.topViewController as? MissionDetailViewController {
+                    detailVC.refuseCompleteRelay.accept(message.body as! String)
+                }
+            }
+        } else if message.name == "back" {
+            dismiss(animated: true)
+        } else if message.name == "home" {
+            dismiss(animated: true) {
+                var vc: UIViewController? = UIViewController.topViewController() as? UINavigationController
+                vc?.dismiss(animated: false)
+            }
         }
+        
     }
 }

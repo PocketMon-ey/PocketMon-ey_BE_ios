@@ -51,20 +51,21 @@ class NetworkService: NetworkServable {
                         print(a)
                     }
                     print(response," ➡️")
-                    let _ = try? JSONDecoder().decode(API.Response.self, from: response.data)
+                    let a = try? JSONDecoder().decode(API.Response.self, from: response.data)
+                    print(api, a)
                     _ = try response.filterSuccessfulStatusCodes()
                     let decodedData = try response.map(API.Response.self)
                     completion(.success(decodedData))
                 } catch let error {
                     print(error)
                     let vc = OneButtonAlertViewController(viewModel: .init(content: "네트워킹에 실패했습니다.\n잠시후 다시 시도해주세요!", buttonText: "확인", textColor: .red))
-                    self.topViewController()?.present(vc, animated: true)
+                    UIViewController.topViewController()?.present(vc, animated: true)
 //                    completion(.failure(handlingError(error)))
                 }
             case .failure(let error):
                 print(error)
                 let vc = OneButtonAlertViewController(viewModel: .init(content: "네트워킹에 실패했습니다.\n잠시후 다시 시도해주세요!", buttonText: "확인", textColor: .red))
-                self.topViewController()?.present(vc, animated: true)
+                UIViewController.topViewController()?.present(vc, animated: true)
 //                completion(.failure(handlingError(error)))
             }
         }
@@ -106,27 +107,5 @@ class NetworkService: NetworkServable {
             return error
         }
     }
-    func topViewController() -> UIViewController? {
 
-        if let keyWindow = UIApplication.shared.keyWindow {
-
-            if var viewController = keyWindow.rootViewController {
-
-                while viewController.presentedViewController != nil {
-
-                    viewController = viewController.presentedViewController!
-
-                }
-
-                print("topViewController -> \(String(describing: viewController))")
-
-                return viewController
-
-            }
-
-        }
-
-        return nil
-
-    }
 }

@@ -35,6 +35,7 @@ class MissionCell: UICollectionViewCell {
         contentView.layer.cornerRadius = 15
         contentView.layer.borderWidth = 3
         contentView.layer.borderColor = UIColor.init(hex: "#C7C7CCFF")?.cgColor
+        backgroundColor = .white
     }
     
     required init?(coder: NSCoder) {

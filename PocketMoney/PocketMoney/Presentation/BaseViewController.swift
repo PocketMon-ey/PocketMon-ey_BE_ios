@@ -26,6 +26,6 @@ class BaseViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        setNavigationBackgroundColor(color: .white)
+        setNavigationBackgroundColor(color: .init(hex: "#F9F9FBFF"))
     }
 }

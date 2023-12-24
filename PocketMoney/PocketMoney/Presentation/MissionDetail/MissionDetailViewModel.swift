@@ -57,6 +57,7 @@ class MissionDetailViewModel {
     let requestTrigger = PublishRelay<Void>()
     let approveTrigger = PublishRelay<Void>()
     let refuseTrigger = PublishRelay<Void>()
+    let reasonRelay = PublishRelay<String>()
     
     // Output
     let requestButtonIsHiddenDriver: Driver<Bool>
@@ -65,7 +66,6 @@ class MissionDetailViewModel {
     let missionDriver: Driver<String>
     let priceDriver: Driver<String>
     let refuseDriver: Driver<String>
-    
     let popDriver: Driver<Void>
     
     init(mission: MissionCellItem) {
@@ -74,7 +74,7 @@ class MissionDetailViewModel {
         requestButtonIsHiddenDriver = viewWillAppearRelay
             .map { _ in !(isChild && mission.status == .wait) }
             .asDriver(onErrorJustReturn: true)
-            
+        
         twoButtonsIsHiddenDriver = viewWillAppearRelay
             .map { _ in !(!isChild && mission.status == .request) }
             .asDriver(onErrorJustReturn: true)
@@ -90,8 +90,10 @@ class MissionDetailViewModel {
             .map { _ in () }
             .share()
         
-        let refuseResult = refuseTrigger
-            .flatMap { _ in NetworkMission.rx.refuseMission(id: mission.missionId) }
+        let refuseResult = reasonRelay
+            .debug("🌈🌈🌈🌈")
+            .flatMap { NetworkMission.rx.refuseMission(id: mission.missionId, reason: $0)
+            }
             .do { _ in UserDefaultManager.rejectCount += 1}
             .map { _ in () }
             .share()
@@ -103,6 +105,6 @@ class MissionDetailViewModel {
         statusDriver = .just(mission.status)
         missionDriver = .just(mission.title)
         priceDriver = .just("\(mission.price)")
-        refuseDriver = .just(mission.rejectReason)
+        refuseDriver = .just(mission.rejectReason).map { "거절 사유\n\($0 == "" ? "없음" : $0)"}
     }
 }

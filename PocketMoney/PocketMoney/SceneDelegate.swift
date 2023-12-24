@@ -18,7 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        window?.backgroundColor = .systemBackground
+        window?.backgroundColor = .init(hex: "#F9F9FBFF")
         let webService = WebViewController(linkString: "http://pocketfe.165.192.105.60.nip.io")
         webService.modalPresentationStyle = .overFullScreen
         webService.modalTransitionStyle = .coverVertical

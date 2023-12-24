@@ -114,10 +114,9 @@ class MissionAddViewController: BaseViewController {
     
     func validCheck() -> Bool {
         if let mission = missionTextField.text,
-            let price = priceTextField.text,
-           let priceInt = Int(price)
+           let price = priceTextField.text?.moneyInt()
         {
-        return mission != "" && priceInt != 0
+        return mission != "" && price > 0 && price < 50000000
         }
         return false
     }
@@ -163,6 +162,7 @@ class MissionAddViewController: BaseViewController {
     }(UILabel())
     let missionTextField: UITextField = {
         $0.placeholder = "예) 설거지"
+        $0.backgroundColor = .white
         return $0
     }(UITextField())
     
@@ -180,7 +180,8 @@ class MissionAddViewController: BaseViewController {
     }(UILabel())
     
     let priceTextField: UITextField = {
-        $0.placeholder = "예) 9,900"
+        $0.placeholder = "예) 9900"
+        $0.backgroundColor = .white
         $0.keyboardType = .numberPad
         return $0
     }(UITextField())

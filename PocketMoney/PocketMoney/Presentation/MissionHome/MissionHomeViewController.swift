@@ -13,10 +13,18 @@ import RxGesture
 
 class MissionHomeViewController: BaseViewController {
     // MARK: - Properties
-    
-    
+    let timerObservable: PublishRelay<Void> = PublishRelay<Void>()
     // MARK: - Binding
     func bind(viewModel: MissionHomeViewModel) {
+
+        // Create an Observable that emits elements periodically
+        Observable<Int>
+            .interval(.seconds(1), scheduler: MainScheduler.instance)
+            .flatMap { _ in NetworkMission.rx.getAccountMoney(id: UserDefaultManager.isChild ? 2 : 1) }
+            .map { "\($0.balance.moneyString())"}
+            .distinctUntilChanged()
+            .bind(to: moneyLabel.rx.text)
+            .disposed(by: disposeBag)
         
         rx.viewDidLoad
             .bind(to: viewModel.viewDidLoadRelay)
@@ -108,6 +116,14 @@ class MissionHomeViewController: BaseViewController {
         // Do any additional setup after loading the view.
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+//        RunLoop.current.add(timer, forMode: .common)
+//
+//        // 타이머 시작
+//        timer.fire()
+//        RunLoop.current.run()
+//        timer.
+    }
     // MARK: - UIComponents
     let scrollView: UIScrollView = {
         return $0
@@ -163,6 +179,18 @@ class MissionHomeViewController: BaseViewController {
         return $0
     }(UIImageView())
     lazy var buttons: [TabButton] = [missionAllButton, approveButton, finishButton]
+    
+    let accountLabel: UILabel = {
+        $0.font = .boldSystemFont(ofSize: 15)
+        $0.text = "포켓모니 연결계좌"
+        $0.textColor = .gray
+        return $0
+    }(UILabel())
+    let moneyLabel: UILabel = {
+        $0.font = .boldSystemFont(ofSize: 20)
+        $0.text = "연결중..."
+        return $0
+    }(UILabel())
 }
 
 extension MissionHomeViewController {
@@ -192,7 +220,7 @@ extension MissionHomeViewController {
             $0.width.equalToSuperview()
         }
         
-        [titleView, missionCompleteLabel, creditRatingLabel, HStackView, listView].forEach {
+        [titleView, missionCompleteLabel, creditRatingLabel, HStackView, accountLabel, moneyLabel, listView].forEach {
             contentView.addSubview($0)
         }
         
@@ -200,28 +228,39 @@ extension MissionHomeViewController {
             $0.centerX.equalToSuperview()
             $0.height.equalTo(Constant.height * 70)
             $0.top.equalToSuperview().inset(Constant.height * 35)
-            $0.leading.trailing.equalToSuperview().inset(10)
+            $0.leading.trailing.equalToSuperview().inset(30)
         }
         
         missionCompleteLabel.snp.makeConstraints {
-            $0.top.leading.equalTo(titleView).inset(5)
+            $0.leading.equalTo(titleView).offset(10)
+            $0.centerY.equalTo(titleView).offset(-10)
         }
         
         creditRatingLabel.snp.makeConstraints {
-            $0.top.equalTo(missionCompleteLabel.snp.bottom).offset(5)
+            $0.centerY.equalTo(titleView).offset(10)
             $0.leading.equalTo(missionCompleteLabel)
         }
         
         HStackView.snp.makeConstraints {
             $0.top.equalTo(titleView.snp.bottom).offset(15)
-            $0.leading.equalToSuperview().inset(10)
+            $0.leading.equalToSuperview().inset(30)
             $0.width.equalToSuperview().multipliedBy(0.6)
             $0.height.equalTo(Constant.height * 25)
         }
         
-        listView.snp.makeConstraints {
+        accountLabel.snp.makeConstraints {
             $0.top.equalTo(HStackView.snp.bottom).offset(20)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.leading.equalTo(HStackView)
+        }
+        
+        moneyLabel.snp.makeConstraints {
+            $0.top.equalTo(accountLabel.snp.bottom).offset(10)
+            $0.leading.equalTo(HStackView)
+        }
+        
+        listView.snp.makeConstraints {
+            $0.top.equalTo(moneyLabel.snp.bottom).offset(20)
+            $0.leading.trailing.equalToSuperview().inset(30)
             $0.bottom.equalToSuperview()
             $0.height.equalTo(1000)
         }

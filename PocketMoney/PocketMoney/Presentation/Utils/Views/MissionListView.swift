@@ -10,6 +10,7 @@ class MissionListView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setUI()
+        collectionView.backgroundColor = .init(hex: "#F9F9FBFF")
     }
     
     required init?(coder: NSCoder) {
@@ -29,7 +30,7 @@ class MissionListView: UIView {
     private lazy var flowLayout: UICollectionViewLayout = {
         let minLineSpacing: CGFloat = 20
         let minInterSpacing: CGFloat = 10
-        let itemWidth = (UIScreen.main.bounds.width - 60) / 2
+        let itemWidth = (UIScreen.main.bounds.width - 80) / 2
 
         let layout = UICollectionViewFlowLayout()
 

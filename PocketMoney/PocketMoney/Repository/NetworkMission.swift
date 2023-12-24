@@ -56,9 +56,10 @@ class NetworkMission: CatSDKNetworkable {
     }
     static func refuseMission(
         id: Int,
+        reason: String,
         completion: @escaping (Result<RefuseMissionDTO.Response, Error>) -> Void
     ) {
-        networkService.request(RefuseMissionAPI(request: .init(id: id))){ result in
+        networkService.request(RefuseMissionAPI(request: .init(id: id, rejectReason: reason))){ result in
             switch result {
             case .success(let dto):
                 completion(.success(dto))
@@ -118,9 +119,10 @@ extension Reactive where Base: NetworkMission {
         Base.networkService.rx.request(ApproveMissionAPI(request: .init(id: id))).asObservable()
     }
     static func refuseMission(
-        id: Int
+        id: Int,
+        reason: String
     ) -> Observable<RefuseMissionDTO.Response> {
-        Base.networkService.rx.request(RefuseMissionAPI(request: .init(id: id))).asObservable()
+        Base.networkService.rx.request(RefuseMissionAPI(request: .init(id: id, rejectReason: reason))).asObservable()
     }
     static func getMissionList(
         childId: Int,
@@ -134,4 +136,9 @@ extension Reactive where Base: NetworkMission {
         Base.networkService.rx.request(ReqeustMissionAPI(request: .init(id: id))).asObservable()
     }
     
+    static func getAccountMoney(
+        id: Int
+    ) -> Observable<GetAccountMoneyDTO.Response> {
+        Base.networkService.rx.request(GetAccountMoneyAPI(request: id)).asObservable()
+    }
 }

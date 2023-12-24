@@ -62,6 +62,7 @@ struct ApproveMissionDTO {
 struct RefuseMissionDTO {
     struct Request: Encodable {
         let id: Int
+        let rejectReason: String
     }
     
     struct Response: Decodable {

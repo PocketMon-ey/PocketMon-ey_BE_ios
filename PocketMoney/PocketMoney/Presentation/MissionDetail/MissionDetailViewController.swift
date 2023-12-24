@@ -12,13 +12,34 @@ import RxCocoa
 
 class MissionDetailViewController: BaseViewController {
     // MARK: - Properties
-    
+    let refuseCompleteRelay = PublishRelay<String>()
     
     // MARK: - Binding
     func bind(viewModel: MissionDetailViewModel) {
+        refuseCompleteRelay
+            .debug("💡💡💡💡💡")
+            .bind(to: viewModel.reasonRelay)
+            .disposed(by: disposeBag)
+        
         rx.viewWillAppear
             .map { _ in () }
             .bind(to: viewModel.viewWillAppearRelay)
+            .disposed(by: disposeBag)
+        
+        refuseButtonView.rx.tapGesture()
+            .when(.recognized)
+            .map { _ in () }
+            .withUnretained(self)
+            .bind { owner, _ in
+                let vc = WebViewController(linkString: "http://localhost:3000/parent/mission/reject")
+                vc.modalPresentationStyle = .overFullScreen
+                owner.present(vc, animated: true)
+            }.disposed(by: disposeBag)
+        
+        approveButtonView.rx.tapGesture()
+            .when(.recognized)
+            .map { _ in () }
+            .bind(to: viewModel.approveTrigger)
             .disposed(by: disposeBag)
         
         requestButtonView.rx.tapGesture()
@@ -27,21 +48,9 @@ class MissionDetailViewController: BaseViewController {
             .bind(to: viewModel.requestTrigger)
             .disposed(by: disposeBag)
         
-        approveButtonView.rx.tapGesture()
-            .when(.recognized)
-            .map { _ in () }
-            .bind(to: viewModel.approveTrigger)
-            .disposed(by: disposeBag)
-        
-        refuseButtonView.rx.tapGesture()
-            .when(.recognized)
-            .map { _ in () }
-            .bind(to: viewModel.refuseTrigger)
-            .disposed(by: disposeBag)
-        
         viewModel.requestButtonIsHiddenDriver
             .drive(with: self) { owner, isHidden in
-                owner.additionalDescriptionLabel.isHidden = false
+                owner.additionalDescriptionLabel.isHidden = isHidden
                 owner.requestButtonView.isHidden = isHidden
             }.disposed(by: disposeBag)
         
@@ -75,6 +84,9 @@ class MissionDetailViewController: BaseViewController {
             .disposed(by: disposeBag)
         viewModel.priceDriver
             .drive(priceLabel.rx.text)
+            .disposed(by: disposeBag)
+        viewModel.refuseDriver
+            .drive(refuseLabel.rx.text)
             .disposed(by: disposeBag)
     }
     
@@ -165,6 +177,7 @@ class MissionDetailViewController: BaseViewController {
     let refuseLabel: UILabel = {
         $0.textColor = .init(hex: "#850DFFFF")
         $0.font = .boldSystemFont(ofSize: 36)
+        $0.numberOfLines = 0
         return $0
     }(UILabel())
 }
@@ -218,6 +231,7 @@ extension MissionDetailViewController {
         
         refuseLabel.snp.makeConstraints {
             $0.top.equalTo(missionView.snp.bottom).offset(20)
+            $0.leading.equalTo(nickNameLabel)
         }
         
         [approveButtonView, refuseButtonView, requestButtonView].forEach {
